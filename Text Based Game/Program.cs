@@ -2,13 +2,14 @@
 using System.Threading;
 using System.Linq;
 using System.Media;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace Text_Based_Game {
-
     class Program {
         static Thread music;
         static void Main(string[] args) {
-            music = new Thread(() => playSong("Menu.wav"));
+            music = new Thread(() => playBackground("Button Press.wav"));
             music.Start();
 
             Console.WriteLine("Welcome to [Game Name!]");
@@ -47,10 +48,26 @@ namespace Text_Based_Game {
 
 
         static void playSong(string fileName) {
-            var p1 = new System.Windows.Media.MediaPlayer();
-            fileName = System.AppContext.BaseDirectory + "../../Sounds/" + fileName;
-            p1.Open(new System.Uri(@fileName));
+            var p1 = new MediaPlayer();
+            fileName = AppContext.BaseDirectory + "../../Sounds/" + fileName;
+            p1.Open(new Uri(@fileName));
             p1.Play();
+        }
+        static void playBackground(string fileName) {
+            Dispatcher.CurrentDispatcher.VerifyAccess();
+
+            MediaPlayer backGroundMusic = new MediaPlayer();
+            fileName = AppContext.BaseDirectory + "../../Sounds/" + fileName;
+            backGroundMusic.Open(new Uri(@fileName));
+            backGroundMusic.MediaEnded += new EventHandler((sender, e) =>
+            {
+                backGroundMusic.Stop();
+                backGroundMusic.Position = TimeSpan.Zero;
+                backGroundMusic.Play();
+            });
+            backGroundMusic.Play();
+
+            Dispatcher.Run();
         }
     }
 }
