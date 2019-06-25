@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Threading;
-using System.Collections.Generic;
-using Melanchall.DryWetMidi.Devices;
-using Melanchall.DryWetMidi.Smf;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Media;
 
 namespace Text_Based_Game {
 
     class Program {
+        static Thread music;
         static void Main(string[] args) {
-            Thread t = new Thread(() => playSong("Mario-Sheet-Music-Death-Sound.mid"));
-            t.Start();
+            music = new Thread(() => playSong("Menu.wav"));
+            music.Start();
 
             Console.WriteLine("Welcome to [Game Name!]");
             Console.WriteLine("[S]tart\n[L]oad\n[E]xit");
 
+            //Handle menu
             char[] controlKeys = new char[] {'s', 'l', 'e'};
 
             char inputChar;
@@ -26,27 +24,33 @@ namespace Text_Based_Game {
 
             switch (inputChar) {
                 case 'e':
+                    System.Environment.Exit(0);
+                    break;
                 case 's':
+                    startGame();
+                    break;
                 case 'l':
                     Console.WriteLine("Unsupported :(");
                     break;
             }
-            
+        }
+
+        static void startGame() {
+            Thread test = new Thread(()=>playSong("Button Press.wav"));
+            test.Start();
+            Console.ReadKey();
+        }
+
+        static void loadGame() {
+
         }
 
 
-
-
-
-
         static void playSong(string fileName) {
-            var midiFile = MidiFile.Read("../../Sounds/" + fileName);
-
-            while (true) {
-                using (var outputDevice = OutputDevice.GetByName("Microsoft GS Wavetable Synth")) {
-                    midiFile.Play(outputDevice);
-                }
-            }
+            var p1 = new System.Windows.Media.MediaPlayer();
+            fileName = System.AppContext.BaseDirectory + "../../Sounds/" + fileName;
+            p1.Open(new System.Uri(@fileName));
+            p1.Play();
         }
     }
 }
