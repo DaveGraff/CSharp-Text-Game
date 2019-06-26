@@ -6,7 +6,6 @@ using System.Windows.Threading;
 
 namespace Text_Based_Game {
     class Program {
-        static Thread music;
 
         static State GameState;
 
@@ -16,13 +15,15 @@ namespace Text_Based_Game {
         static readonly string[] shop = { "[E]xit the shop" };
         static readonly string[] dead = { "You Died..." };
 
+        static Jukebox backgroundMusic;
+
         //Different States to describe the characters current location in the game
         //Used by GameState variable
         enum State { Exit, Dead, Home, Fighting, Shop }; 
 
         static void Main(string[] args) {
-            music = new Thread(() => PlayBackground("Menu.wav"));
-            music.Start();
+            backgroundMusic = new Jukebox();
+            backgroundMusic.Play();
 
             Console.WriteLine("Welcome to [Game Name!]");
             Console.WriteLine("[S]tart\n[L]oad\n[E]xit");
@@ -128,7 +129,7 @@ namespace Text_Based_Game {
         }
 
         static void Dead() {
-            music.Abort();
+            backgroundMusic.Stop();
             Thread sound = new Thread(() => PlaySong("Mario-Sheet-Music-Death-Sound.mid"));
             sound.Start();
         }
@@ -150,24 +151,6 @@ namespace Text_Based_Game {
             fileName = AppContext.BaseDirectory + "../../Sounds/" + fileName;
             p1.Open(new Uri(@fileName));
             p1.Play();
-        }
-
-        //Thread method for looping backgound Music
-        static void PlayBackground(string fileName) {
-            Dispatcher.CurrentDispatcher.VerifyAccess();
-
-            MediaPlayer backGroundMusic = new MediaPlayer();
-            fileName = AppContext.BaseDirectory + "../../Sounds/" + fileName;
-            backGroundMusic.Open(new Uri(@fileName));
-            backGroundMusic.MediaEnded += new EventHandler((sender, e) =>
-            {
-                backGroundMusic.Stop();
-                backGroundMusic.Position = TimeSpan.Zero;
-                backGroundMusic.Play();
-            });
-            backGroundMusic.Play();
-
-            Dispatcher.Run();
         }
     }
 }
