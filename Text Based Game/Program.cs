@@ -3,6 +3,7 @@ using System.Threading;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Collections.Generic;
 
 namespace Text_Based_Game {
     class Program {
@@ -14,6 +15,11 @@ namespace Text_Based_Game {
         static readonly string[] fightingOptions = { "[K]ill yourself", "[R]eturn Home" };
         static readonly string[] shop = { "[E]xit the shop" };
         static readonly string[] dead = { "You Died..." };
+
+        static Dictionary<string, string> sounds = new Dictionary<string, string>() {
+            {"select","Button Press.wav"},
+            {"dead", "Mario-Sheet-Music-Death-Sound.mid" }
+        };
 
         static Jukebox backgroundMusic;
 
@@ -36,7 +42,7 @@ namespace Text_Based_Game {
                 inputChar = Console.ReadKey().KeyChar;
             } while (!controlKeys.Contains(inputChar));
 
-            Selection();
+            PlaySong(sounds["select"]);
             switch (inputChar) {
                 case 'e':
                     Environment.Exit(0);
@@ -87,7 +93,7 @@ namespace Text_Based_Game {
         }
 
         static void GameStep(char selection) {
-            Selection();
+            PlaySong(sounds["select"]);
             Console.WriteLine();
             switch (GameState) {
                 case State.Home:
@@ -130,19 +136,12 @@ namespace Text_Based_Game {
 
         static void Dead() {
             backgroundMusic.Stop();
-            Thread sound = new Thread(() => PlaySong("Mario-Sheet-Music-Death-Sound.mid"));
-            sound.Start();
+            PlaySong(sounds["dead"]);
         }
 
 
         static void loadGame() {
 
-        }
-
-        //Plays in game selection sound
-        static void Selection() {
-            Thread sound = new Thread(() => PlaySong("Button Press.wav"));
-            sound.Start();
         }
 
         //Plays any general sound file 
