@@ -8,13 +8,14 @@ using System.Collections.Generic;
 namespace Text_Based_Game {
     class Program {
 
-        static State GameState;
+        static State GameState = State.MainMenu;
 
         //Constants for selection options in each location
         static readonly string[] homeOptions = {"[R]est at the Inn","[V]isit the Shop", "[F]ight Monsters", "[E]xit without saving"};
         static readonly string[] fightingOptions = { "[K]ill yourself", "[R]eturn Home" };
         static readonly string[] shop = { "[E]xit the shop" };
         static readonly string[] dead = { "You Died..." };
+        static readonly string[] mainMenu = { "Welcome to [Game Name!]\n", "[S]tart", "[L]oad", "[E]xit" };
 
         static Dictionary<string, string> sounds = new Dictionary<string, string>() {
             {"select","Button Press.wav"},
@@ -25,18 +26,17 @@ namespace Text_Based_Game {
 
         //Different States to describe the characters current location in the game
         //Used by GameState variable
-        enum State { Exit, Dead, Home, Fighting, Shop }; 
+        enum State { Exit, Dead, Home, Fighting, Shop, MainMenu }; 
 
         static void Main(string[] args) {
             backgroundMusic = new Jukebox();
             backgroundMusic.Play();
 
-            Console.WriteLine("Welcome to [Game Name!]");
-            Console.WriteLine("[S]tart\n[L]oad\n[E]xit");
-
             //Handle menu
-            char[] controlKeys = new char[] {'s', 'l', 'e'};
+            PrintOptions();
+            
 
+            char[] controlKeys = new char[] { 's', 'l', 'e' };
             char inputChar;
             do {
                 inputChar = Console.ReadKey().KeyChar;
@@ -48,6 +48,7 @@ namespace Text_Based_Game {
                     Environment.Exit(0);
                     break;
                 case 's':
+                    Console.WriteLine();
                     StartGame();
                     break;
                 case 'l':
@@ -57,6 +58,7 @@ namespace Text_Based_Game {
         }
 
         static void StartGame() {
+            
             GameState = State.Home;
             while (GameState != State.Exit) {
                 PrintOptions();
@@ -81,15 +83,19 @@ namespace Text_Based_Game {
                     options = dead;
                     Dead();
                     break;
+                case State.MainMenu:
+                    options = mainMenu;
+                    break;
                 default:
                     options = new string[0];
                     break;
             }
-            Console.WriteLine();
-            foreach(string option in options) {
+
+            
+            foreach (string option in options) {
                 Console.WriteLine(option);
             }
-
+            Console.WriteLine();
         }
 
         static void GameStep(char selection) {
