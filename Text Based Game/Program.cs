@@ -7,9 +7,7 @@ using System.Collections.Generic;
 
 namespace Text_Based_Game {
     class Program {
-
         static State GameState = State.MainMenu;
-
         //Constants for selection options in each location
         static readonly string[] homeOptions = {"[R]est at the Inn","[V]isit the Shop", "[F]ight Monsters", "[E]xit without saving"};
         static readonly string[] fightingOptions = { "[K]ill yourself", "[R]eturn Home" };
@@ -17,23 +15,20 @@ namespace Text_Based_Game {
         static readonly string[] dead = { "You Died..." };
         static readonly string[] mainMenu = { "Welcome to [Game Name!]\n", "[S]tart", "[L]oad", "[E]xit" };
 
-        static Dictionary<string, string> sounds = new Dictionary<string, string>() {
+        static readonly Dictionary<string, string> sounds = new Dictionary<string, string>() {
             {"select","Button Press.wav"},
             {"dead", "Mario-Sheet-Music-Death-Sound.mid" }
         };
 
         static Jukebox backgroundMusic;
 
-        //Different States to describe the characters current location in the game
-        //Used by GameState variable
-        enum State { Exit, Dead, Home, Fighting, Shop, MainMenu }; 
-
         static void Main(string[] args) {
             backgroundMusic = new Jukebox();
             backgroundMusic.Play();
+            Output.GameState = GameState;
 
             //Handle menu
-            PrintOptions();
+            Output.DisplayState();
             
 
             char[] controlKeys = new char[] { 's', 'l', 'e' };
@@ -58,45 +53,18 @@ namespace Text_Based_Game {
         }
 
         static void StartGame() {
-            
             GameState = State.Home;
+            Output.GameState = GameState;
+            Output.DisplayState();
+            char action;
             while (GameState != State.Exit) {
-                PrintOptions();
-                GameStep(Console.ReadKey().KeyChar);
+                GameStep((action=Console.ReadKey().KeyChar));
+                Output.DisplayState(action);
             }
         }
 
         //Prints avaiable options based on GameState and Options lists
-        static void PrintOptions() {
-            string[] options;
-            switch (GameState) {
-                case State.Home:
-                    options = homeOptions;
-                    break;
-                case State.Fighting:
-                    options = fightingOptions;
-                    break;
-                case State.Shop:
-                    options = shop;
-                    break;
-                case State.Dead:
-                    options = dead;
-                    Dead();
-                    break;
-                case State.MainMenu:
-                    options = mainMenu;
-                    break;
-                default:
-                    options = new string[0];
-                    break;
-            }
-
-            
-            foreach (string option in options) {
-                Console.WriteLine(option);
-            }
-            Console.WriteLine();
-        }
+        
 
         static void GameStep(char selection) {
             PlaySong(sounds["select"]);
@@ -104,9 +72,6 @@ namespace Text_Based_Game {
             switch (GameState) {
                 case State.Home:
                     switch (selection) {
-                        case 'r':
-                            Console.WriteLine("Taking a quick nap....");
-                            break;
                         case 'v':
                             GameState = State.Shop;
                             break;
@@ -123,6 +88,7 @@ namespace Text_Based_Game {
                     switch (selection) {
                         case 'k':
                             GameState = State.Dead;
+                            Dead();
                             break;
                         case 'r':
                             GameState = State.Home;
@@ -137,7 +103,7 @@ namespace Text_Based_Game {
                     }
                     break;
             }
-
+            Output.GameState = GameState;
         }
 
         static void Dead() {
