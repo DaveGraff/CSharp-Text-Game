@@ -33,13 +33,14 @@ namespace Text_Based_Game {
                 Jukebox.PlaySong("Button Press.wav");
             }
 
+            metaData = "";
+
             return keyVal;
         }
 
         private static void printMeta() {
             if (metaData.Length != 0) {
-                Console.WriteLine(metaData);
-                metaData = "";
+                Console.WriteLine("\n\n" + metaData);
             }
         }
     }

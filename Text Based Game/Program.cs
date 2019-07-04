@@ -9,7 +9,6 @@ using System.Windows.Threading;
 namespace Text_Based_Game {
     class Program {
         private static Jukebox music = new Jukebox("../../Sounds/");
-        private static string metaData;
 
         static void Main(string[] args) {
             music.PlayBackground("Menu.wav");
@@ -56,13 +55,6 @@ namespace Text_Based_Game {
         static void exit() {
             music.Stop();
             Environment.Exit(0);
-        }
-
-        static void printMeta() {
-            if(metaData.Length != 0) {
-                Console.WriteLine(metaData);
-                metaData = "";
-            }
-        }
+        }       
     }
 }
