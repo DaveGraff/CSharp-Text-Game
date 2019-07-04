@@ -2,59 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Text_Based_Game {
     class Output {
-        //Constants for selection options in each location
-        private static readonly string[] home = { "[R]est at the Inn", "[V]isit the Shop", "[F]ight Monsters", "[E]xit without saving" };
-        private static readonly string[] fighting = { "[K]ill yourself", "[R]eturn Home" };
-        private static readonly string[] shop = { "[E]xit the shop" };
-        private static readonly string[] dead = { "You Died..." };
-        private static readonly string[] mainMenu = { "Welcome to [Game Name!]\n", "[S]tart", "[L]oad", "[E]xit" };
-
-        static readonly Dictionary<State, string[]> options = new Dictionary<State, string[]>() {
-            {State.MainMenu, mainMenu },
-            {State.Home, home },
-            {State.Shop, shop },
-            {State.Fighting, fighting },
-            {State.Dead, dead }
+        private static Dictionary<string, string> states = new Dictionary<string, string>() {
+            {"menu", "Welcome to Adventures United!\n[S]tart\n[L]oad\n[E]xit" },
+            {"home", "[R]est at the Inn\n[V]isit the Shop\n[F]ight Monsters\n[E]xit without saving" },
+            {"dead", "You died..." },
+            {"shop", "[E]xit the shop" },
+            {"adventure", "[F]ight monster\n[R]eturn" },
+            {"playerturn", "[A]ttack\n[U]se Item\n[R]un away" }
         };
 
-        private static readonly Dictionary<char, string> homeD = new Dictionary<char, string>() {
-            {'r',"You spend a night at the Inn. \nHealth Fully Restored!" }
-        };
-        private static readonly Dictionary<char, string> fightingD = new Dictionary<char, string>() {
-            {'k',"rip..." }
-        };
-        private static readonly Dictionary<char, string> shopD = new Dictionary<char, string>() {
-            
-        }; private static readonly Dictionary<char, string> deadD = new Dictionary<char, string>() {
+        public static Char displayState(string state) {
+            string regex = ("\\[.\\]");
+            MatchCollection matches = Regex.Matches(states[state], regex);
+            Char[] options = matches.Cast<Match>().Select(m => m.Value[1]).ToArray();
 
-        };
-        private static readonly Dictionary<State, Dictionary<char, string>> states = new Dictionary<State, Dictionary<char, string>>() {
-            {State.Home, homeD },
-            {State.Fighting, fightingD },
-            {State.Shop, shopD },
-            {State.Dead, deadD }
-        };
-        public static State GameState { get; set; } = State.MainMenu;
-
-        public static void DisplayState() {
-            Console.Clear();
-            foreach (string x in options[GameState]) {
-                Console.WriteLine(x);
+            Char keyVal = '\n';
+            while (!options.Contains(keyVal)) {
+                Console.Clear();
+                Console.WriteLine(states[state]);
+                keyVal = Char.ToUpper(Console.ReadKey().KeyChar);
+                Jukebox.PlaySong("Button Press.wav");
             }
-        }
-        public static void DisplayState(char action) {
-            Console.Clear();
-            foreach (string option in options[GameState]) {
-                Console.WriteLine(option);
-            }
-            Console.WriteLine();
 
-            if (states[Output.GameState].ContainsKey(action))
-                Console.WriteLine(states[Output.GameState][action]);
+            return keyVal;
         }
     }
 }

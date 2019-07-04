@@ -7,14 +7,17 @@ using System.Windows.Threading;
 namespace Text_Based_Game {
     class Jukebox {
         private MediaPlayer music;
-        private readonly string mainMusic = "Menu.wav";
-        private readonly string fileName;
-        public Jukebox() {
+        private string soundsDirectory;
+
+        public Jukebox(string soundsDirectory) {
             music = new MediaPlayer();
-            fileName = AppContext.BaseDirectory + "../../Sounds/" + mainMusic;
+            this.soundsDirectory = soundsDirectory;
         }
-        public void Play() {
-            music.Open(new Uri(@fileName));
+
+        public void PlayBackground(string song) {
+            string filename = AppContext.BaseDirectory + soundsDirectory + song;
+
+            music.Open(new Uri(@filename));
             music.MediaEnded += new EventHandler((sender, e) => {
                 music.Stop();
                 music.Position = TimeSpan.Zero;
@@ -22,8 +25,17 @@ namespace Text_Based_Game {
             });
             music.Play();
         }
-        public void Stop() { 
+
+        public void Stop() {
             music.Stop();
+        }
+
+        //Plays any general sound file 
+        public static void PlaySong(string fileName) {
+            var p1 = new MediaPlayer();
+            fileName = AppContext.BaseDirectory + "../../Sounds/" + fileName;
+            p1.Open(new Uri(@fileName));
+            p1.Play();
         }
     }
 }
