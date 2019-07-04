@@ -16,6 +16,9 @@ namespace Text_Based_Game {
             {"playerturn", "[A]ttack\n[U]se Item\n[R]un away" }
         };
 
+        private static string metaData { get; set; }
+
+
         public static Char displayState(string state) {
             string regex = ("\\[.\\]");
             MatchCollection matches = Regex.Matches(states[state], regex);
@@ -25,11 +28,19 @@ namespace Text_Based_Game {
             while (!options.Contains(keyVal)) {
                 Console.Clear();
                 Console.WriteLine(states[state]);
+                printMeta();
                 keyVal = Char.ToUpper(Console.ReadKey().KeyChar);
                 Jukebox.PlaySong("Button Press.wav");
             }
 
             return keyVal;
+        }
+
+        private static void printMeta() {
+            if (metaData.Length != 0) {
+                Console.WriteLine(metaData);
+                metaData = "";
+            }
         }
     }
 }

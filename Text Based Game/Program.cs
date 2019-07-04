@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
+using System.Windows.Threading;
+
 
 namespace Text_Based_Game {
     class Program {
         private static Jukebox music = new Jukebox("../../Sounds/");
+        private static string metaData;
+
         static void Main(string[] args) {
             music.PlayBackground("Menu.wav");
             menuState();
@@ -15,6 +19,7 @@ namespace Text_Based_Game {
         static void menuState() {
             switch (Output.displayState("menu")) {
                 case 'S':
+                    homeState();
                     break;
                 case 'L':
                     break;
@@ -27,6 +32,16 @@ namespace Text_Based_Game {
         static void homeState() {
             switch (Output.displayState("home")) {
                 case 'R':
+                    for(int i = 0; i < 2; i++) {
+                        Console.Clear();
+                        Console.WriteLine("Z");
+                        Thread.Sleep(300);
+                        Console.WriteLine("Z");
+                        Thread.Sleep(300);
+                        Console.WriteLine("Z...");
+                        Thread.Sleep(300);
+                    }
+                    homeState();
                     break;
                 case 'V':
                     break;
@@ -38,10 +53,16 @@ namespace Text_Based_Game {
             }
         }
 
-
         static void exit() {
             music.Stop();
             Environment.Exit(0);
+        }
+
+        static void printMeta() {
+            if(metaData.Length != 0) {
+                Console.WriteLine(metaData);
+                metaData = "";
+            }
         }
     }
 }
