@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Character.cs" />
-    <Compile Include="States.cs" />
     <Compile Include="Jukebox.cs" />
     <Compile Include="Output.cs" />
     <Compile Include="Program.cs" />
